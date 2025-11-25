@@ -64,3 +64,7 @@ To run the setup and checker scripts, you need:
    ```cmd
    setup.cmd
    ```
+
+## Additional Information
+
+- [Install Bicep Tools - Microsoft Learn](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
