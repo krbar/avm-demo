@@ -133,7 +133,7 @@ $cliLoggedIn = $false
 if ($hasAzCli) {
     try {
         $cliCtx = az account show 2>$null
-        if ($cliCtx) { $cliLoggedIn = $true; Write-Ok "Azure CLI: logged in." }
+        if ($cliCtx) { $cliLoggedIn = $true; Write-Ok "Azure CLI: logged in. Subscription: $((($cliCtx | ConvertFrom-Json).name))" }
         else { Write-Warn "Azure CLI: NOT logged in. Run 'az login'." }
     } catch {
         Write-Warn "Azure CLI: login check failed. Run 'az login'."
