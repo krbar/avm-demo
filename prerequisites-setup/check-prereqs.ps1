@@ -184,16 +184,25 @@ if ($canRunPsTest) {
 
 # 5) Run test if requested and possible
 #    Uses different RG names for CLI vs PowerShell paths and ensures both are deleted.
-if ($RunTestIfPossible) {
+if ($RunTestIfPossible -and ($canRunCliTest -or $canRunPsTest)) {
     Write-Section "Bicep Deployment Tests (Subscription Scope)"
-    $rgNameCli = "rg-bicep-test-cli-{0}" -f ([System.Guid]::NewGuid().ToString().Substring(0,8))
-    $rgNamePs  = "rg-bicep-test-pwsh-{0}"  -f ([System.Guid]::NewGuid().ToString().Substring(0,8))
-    $createdCli = $false
-    $createdPs  = $false
+    Write-Host ""
+    Write-Host "This will create temporary resource groups to test Bicep deployment." -ForegroundColor Yellow
+    Write-Host "The resource groups will be automatically deleted after the test." -ForegroundColor Yellow
+    Write-Host ""
+    
+    $response = Read-Host "Do you want to run the deployment test? [Y/n]"
+    if ([string]::IsNullOrWhiteSpace($response)) { $response = "Y" }
+    
+    if ($response.ToLower() -in @('y','yes')) {
+        $rgNameCli = "rg-bicep-test-cli-{0}" -f ([System.Guid]::NewGuid().ToString().Substring(0,8))
+        $rgNamePs  = "rg-bicep-test-pwsh-{0}"  -f ([System.Guid]::NewGuid().ToString().Substring(0,8))
+        $createdCli = $false
+        $createdPs  = $false
 
-    Write-Info "Location: $Location"
-    Write-Info "CLI test RG: $rgNameCli"
-    Write-Info "PS  test RG: $rgNamePs"
+        Write-Info "Location: $Location"
+        Write-Info "CLI test RG: $rgNameCli"
+        Write-Info "PS  test RG: $rgNamePs"
 
     if ($canRunCliTest) {
         Write-Info "Running CLI-based deployment (verbose)..."
@@ -264,6 +273,9 @@ if ($RunTestIfPossible) {
         }
     } else {
         Write-Info "No PowerShell test RG to delete."
+    }
+    } else {
+        Write-Info "Deployment test skipped by user."
     }
 }
 
